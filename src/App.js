@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const backend = "http://127.0.0.1:5000";
+const backend = "https://btp-backend-n3xs.onrender.com";
 const mimeType = "audio/webm;codecs=opus";
 
 function App() {
