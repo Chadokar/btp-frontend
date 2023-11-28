@@ -46,6 +46,7 @@ function App() {
     setRecorder(recorder);
     recorder.start(10);
     setButtonStates((x) => ({ ...x, start: false, pause: true, stop: true }));
+    document.querySelector(".record").classList.add("recording");
   }
 
   function pauseRecording(e) {
@@ -56,6 +57,7 @@ function App() {
         pause: false,
         resume: true,
       }));
+      document.querySelector(".record").classList.remove("recording");
     } else if (recorder.state === "paused") {
       recorder.resume();
       setButtonStates((x) => ({
@@ -63,6 +65,7 @@ function App() {
         pause: true,
         resume: false,
       }));
+      document.querySelector(".record").classList.add("recording");
     }
   }
 
@@ -70,6 +73,7 @@ function App() {
     recorder.stop();
     recorder.stream.getAudioTracks()[0].stop();
     setButtonStates((x) => ({ ...x, start: true, pause: false, stop: false }));
+    document.querySelector(".record").classList.remove("recording");
   }
 
   function uploadToBackend(e) {
@@ -93,16 +97,16 @@ function App() {
   return (
     <div className="App">
       <h1>Audio Recorder</h1>
-
-      <input
+      <h2>For audio file</h2>
+      {/* <input
         className="fileinput"
         type="file"
         accept="audio/*"
         onChange={(e) => handleFileChange(e.target.files[0])}
-      />
+      /> */}
 
       <div className="record">
-        <h3>Record</h3>
+        <h3>For Voice Recording</h3>
         <button disabled={!buttonStates.start} onClick={startRecording}>
           Start
         </button>
