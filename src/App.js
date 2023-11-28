@@ -97,7 +97,7 @@ function App() {
   return (
     <div className="App">
       <h1>Audio Recorder</h1>
-      <h2>For audio file</h2>
+      {/* <h2>For audio file</h2> */}
       {/* <input
         className="fileinput"
         type="file"
