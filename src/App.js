@@ -8,6 +8,7 @@ function App() {
   const [file, setFile] = useState({ blob: null, url: null });
   const [recorder, setRecorder] = useState();
   const [textArray, setTextArray] = useState([]);
+  const [refine, setRefine] = useState([]);
   const [error, setError] = useState(null);
   const [buttonStates, setButtonStates] = useState({
     start: true,
@@ -16,23 +17,6 @@ function App() {
     stop: false,
     upload: false,
   });
-
-  function handleAnswer() {
-    fetch("http://127.0.0.1:8000/answer")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setTextArray(data.text_array);
-        console.log(data);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }
 
   function handleFileChange(f) {
     const blob = new Blob(f, { type: mimeType });
@@ -105,24 +89,13 @@ function App() {
       .then((data) => {
         setButtonStates((x) => ({ ...x, upload: false }));
         setTranscript(data.transcript || `facing error: ${data.error}`);
+        setTextArray([...textArray, data.transcript]);
       })
       .catch((err) => {
         setButtonStates((x) => ({ ...x, upload: true }));
         console.error(err);
       });
   }
-
-  const arr = [
-    "How are mountains formed?",
-    "What causes the formation of mountains?",
-    "Explain the geological processes behind mountain formation.",
-    "Can you describe the process by which mountains are created?",
-    "I'm unclear about the origin of mountains � can you explain?",
-    "Tell me about the mechanisms that lead to mountain formation.",
-    "What geological forces contribute to the creation of mountains?",
-    "How do mountains come into existence?",
-    "hi can you hear me",
-  ];
 
   async function fastsomehandle(e) {
     // const body = new FormData();
@@ -134,7 +107,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          texts: [...arr],
+          texts: [...textArray],
         }),
       });
 
@@ -143,6 +116,7 @@ function App() {
       }
 
       const data = await response.json();
+      if (Array.isArray(data)) setRefine([...data]);
       console.log(data);
     } catch (error) {
       console.error("Error:", error);
@@ -185,17 +159,20 @@ function App() {
       <p className="transcript">{transcript}</p>
       <p></p>
       <p></p>
-      <h1>Refined questions</h1>
-      <button onClick={handleAnswer}>Refined questions</button>
+      <h1>Unfiltered questions</h1>
       <ul>
         {textArray.map((text, index) => (
           <li key={index}>{text}</li>
         ))}
       </ul>
 
-      <button onClick={fasthandle}>click</button>
-      <h1>th</h1>
-      <button onClick={fastsomehandle}>click here</button>
+      <button onClick={fastsomehandle}>Refine Questions</button>
+      <h1>Refined questions</h1>
+      <ul>
+        {refine.map((text, index) => (
+          <li key={index}>{text}</li>
+        ))}
+      </ul>
     </div>
   );
 }
