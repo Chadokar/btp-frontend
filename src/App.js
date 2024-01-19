@@ -112,56 +112,6 @@ function App() {
       });
   }
 
-  async function fasthandle(e) {
-    // const body = new FormData();
-    // body.append("file", file.blob);
-    try {
-      const response = await fetch("http://127.0.0.1:8000/stemmer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: "Explain the geological processes behind mountain formation",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  }
-
-  async function fasthandle(e) {
-    // const body = new FormData();
-    // body.append("file", file.blob);
-    try {
-      const response = await fetch("http://127.0.0.1:8000/stemmer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: "Explain the geological processes behind mountain formation",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  }
-
   const arr = [
     "How are mountains formed?",
     "What causes the formation of mountains?",
