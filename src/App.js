@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const backend = "https://btp-backend-n3xs.onrender.com";
 const mimeType = "audio/webm;codecs=opus";
 
 function App() {
   const [transcript, setTranscript] = useState("");
   const [file, setFile] = useState({ blob: null, url: null });
   const [recorder, setRecorder] = useState();
+  const [textArray, setTextArray] = useState([]);
+  const [error, setError] = useState(null);
   const [buttonStates, setButtonStates] = useState({
     start: true,
     pause: false,
@@ -15,6 +16,23 @@ function App() {
     stop: false,
     upload: false,
   });
+
+  function handleAnswer() {
+    fetch("http://127.0.0.1:8000/answer")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setTextArray(data.text_array);
+        console.log(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
 
   function handleFileChange(f) {
     const blob = new Blob(f, { type: mimeType });
@@ -79,7 +97,7 @@ function App() {
   function uploadToBackend(e) {
     const body = new FormData();
     body.append("file", file.blob);
-    fetch(`${backend}/transcribe`, {
+    fetch(`http://127.0.0.1:8000/transcribe`, {
       method: "POST",
       body,
     })
@@ -94,16 +112,103 @@ function App() {
       });
   }
 
+  async function fasthandle(e) {
+    // const body = new FormData();
+    // body.append("file", file.blob);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/stemmer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: "Explain the geological processes behind mountain formation",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  async function fasthandle(e) {
+    // const body = new FormData();
+    // body.append("file", file.blob);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/stemmer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: "Explain the geological processes behind mountain formation",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  const arr = [
+    "How are mountains formed?",
+    "What causes the formation of mountains?",
+    "Explain the geological processes behind mountain formation.",
+    "Can you describe the process by which mountains are created?",
+    "I'm unclear about the origin of mountains � can you explain?",
+    "Tell me about the mechanisms that lead to mountain formation.",
+    "What geological forces contribute to the creation of mountains?",
+    "How do mountains come into existence?",
+    "hi can you hear me",
+  ];
+
+  async function fastsomehandle(e) {
+    // const body = new FormData();
+    // body.append("file", file.blob);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/process", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          texts: [...arr],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   return (
     <div className="App">
       <h1>Audio Recorder</h1>
-      {/* <h2>For audio file</h2> */}
-      {/* <input
+      <h2>For audio file</h2>
+      <input
         className="fileinput"
         type="file"
         accept="audio/*"
         onChange={(e) => handleFileChange(e.target.files[0])}
-      /> */}
+      />
 
       <div className="record">
         <h3>For Voice Recording</h3>
@@ -128,6 +233,19 @@ function App() {
       </button>
 
       <p className="transcript">{transcript}</p>
+      <p></p>
+      <p></p>
+      <h1>Refined questions</h1>
+      <button onClick={handleAnswer}>Refined questions</button>
+      <ul>
+        {textArray.map((text, index) => (
+          <li key={index}>{text}</li>
+        ))}
+      </ul>
+
+      <button onClick={fasthandle}>click</button>
+      <h1>th</h1>
+      <button onClick={fastsomehandle}>click here</button>
     </div>
   );
 }
